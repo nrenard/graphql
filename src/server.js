@@ -4,6 +4,7 @@ dotEnv.config();
 import express from 'express';
 import expressGraphql from "express-graphql";
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 import routes from './routes';
 import authMiddleware from './app/middlewares/auth';
@@ -17,7 +18,12 @@ class Server {
     this.express = express();
 
     this.database();
+    this.middlewares();
     this.routes();
+  }
+
+  middlewares() {
+    this.express.use(cors());
   }
 
   database() {
