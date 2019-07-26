@@ -6,4 +6,4 @@ const options = {
   playground: process.env.NODE_ENV === "development" ? '/playground' : null, 
 };
 
-server.start(options);
+server.listen(options.port);

@@ -2,16 +2,14 @@ import User from '../models/User';
 
 class UserController {
   async index() {
-    // const users = ;
-    // console.log({ users });
     return User.find().exec();
   }
 
-  show(_, { id }) {
+  show({ id }) {
     return User.findById(id);
   }
 
-  store(_, { name, email }) {
+  store({ name, email }) {
     return User.create({ name, email });
   }
 }

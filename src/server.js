@@ -1,21 +1,20 @@
 import dotEnv from 'dotenv';
 dotEnv.config();
 
-import { GraphQLServer } from 'graphql-yoga';
-import { resolve } from 'path';
-
-import resolvers from './resolvers';
-import routes from './routes';
-
+import express from 'express';
+import expressGraphql from "express-graphql";
 import mongoose from 'mongoose';
+
+import routes from './routes';
+import authMiddleware from './app/middlewares/auth';
+
+import graphQLSchema from './graphQLSchema';
+import resolvers from './resolvers';
 
 
 class Server {
   constructor() {
-    this.graphql = new GraphQLServer({
-      typeDefs: resolve(__dirname, 'schema.graphql'),
-      resolvers,
-    });
+    this.express = express();
 
     this.database();
     this.routes();
@@ -28,8 +27,18 @@ class Server {
   }
 
   routes () {
-    this.graphql.use(routes);
+    this.express.use(routes);
+
+    this.express.use(authMiddleware);
+    this.express.use(
+      "/graphql",
+      expressGraphql({
+        schema: graphQLSchema,
+        rootValue: resolvers,
+        graphiql: true
+      })
+    );
   }
 }
 
-export default new Server().graphql;
+export default new Server().express;
